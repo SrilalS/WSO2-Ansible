@@ -1,0 +1,20 @@
+- name: Install Apache
+  apt: name=apache2 update_cache=yes state=latest
+
+- name: Start Apache Service
+  service: name=apache2 state=started enabled=true
+
+- name: Allow Apache through Firewall
+  ufw:
+    rule: allow
+    port: 80
+    proto: tcp
+
+- name: Deploy HTML File
+  template:
+    src: ./index.html.j2
+    dest: /var/www/html/index.html
+
+- name: Change Server Host Name
+  hostname: 
+    name=LT-2021-018-webserver{{groups['all'].index(inventory_hostname)+1}}
